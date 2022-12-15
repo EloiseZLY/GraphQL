@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>graphql demo</title>
+  </head>
+
+  <body>
+    <input class="input" />
+    <button class="button">get data</button>
+    <p class="name"></p>
+    <p class="job"></p>
+  </body>
+  <script>
+    var button = document.querySelector(".button");
+    button.onclick = function () {
+      var id = document.querySelector(".input").value;
+      var name = document.querySelector(".name");
+      var job = document.querySelector(".job");
+      fetch("http://localhost:3300/graphql", {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          query: `{
+                    name(id:${id}),
+                    job(id:${id}),
+                    person(id:${id}) {
+                        name,
+                        job
+                    }
+            }`,
+        }),
+        mode: "cors",
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (res) {
+          name.innerHTML = `name: ${res.data.name}`;
+          job.innerHTML = `job: ${res.data.job}`;
+          console.log(res.data.person);
+        })
+        .catch((err) => {
+          console.error("error: ", err);
+        });
+    };
+  </script>
+</html>
